@@ -18,6 +18,14 @@ web界面已实现的功能说明：
 		例子：http://192.168.100.104/sendmsg?friendfield=1&friend=lyk-ops&content=测试
 		执行之后返回一个json格式的字典，包含发送结果代码【0为成功，其他均失败】，发送失败原因、好友信息等等
 
+截图：
+![登陆成功之后 截图](https://github.com/lykops/lykchat/blob/master/doc/登陆成功之后.jpg)
+![等待扫码 截图](https://github.com/lykops/lykchat/blob/master/doc/等待扫码.jpg)
+![二维码已失效 截图](https://github.com/lykops/lykchat/blob/master/doc/二维码已失效.jpg)
+![发送信息截图 截图](https://github.com/lykops/lykchat/blob/master/doc/发送信息截图.jpg)
+![好友列表截图 截图](https://github.com/lykops/lykchat/blob/master/doc/好友列表截图.jpg)
+![接口发送信息 截图](https://github.com/lykops/lykchat/blob/master/doc/接口发送信息.jpg)
+![退出 截图](https://github.com/lykops/lykchat/blob/master/doc/退出.jpg)
 	
 命令行已实现的功能说明：
 
