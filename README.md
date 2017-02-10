@@ -22,23 +22,26 @@ web界面已实现的功能说明：
 ![等待扫码 截图](https://github.com/lykops/lykchat/blob/master/doc/等待扫码.jpg)
 等待扫码 截图
 
+
 ![二维码已失效 截图](https://github.com/lykops/lykchat/blob/master/doc/二维码已失效.jpg)
 二维码已失效 截图
+
 
 ![登陆成功之后 截图](https://github.com/lykops/lykchat/blob/master/doc/登陆成功之后.jpg)
 登陆成功之后 截图
 
+
 ![发送信息截图 截图](https://github.com/lykops/lykchat/blob/master/doc/发送信息截图.jpg)
 发送信息截图 截图
+
 
 ![好友列表截图 截图](https://github.com/lykops/lykchat/blob/master/doc/好友列表截图.jpg)
 好友列表截图 截图
 
-![退出 截图](https://github.com/lykops/lykchat/blob/master/doc/退出.jpg)
-退出 截图
 
 ![接口发送信息 截图](https://github.com/lykops/lykchat/blob/master/doc/接口发送信息.jpg)
 接口发送信息 截图
+
 
 
 命令行已实现的功能说明：
