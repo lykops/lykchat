@@ -1,0 +1,31 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+	        {% if status == 222 %}
+	        <div class="alert alert-success text-center">
+	            登陆状态：{{descript}}
+	            </br>
+	            操作建议：{{suggest}}
+                </br>
+	            昵称：{{nickname}}
+	            </br>
+		        {% if alias != '' %}
+		        微信号：{{alias}}
+		        {% endif %}
+	            </br>
+	            登陆时间：{{login_min}}
+	        </div>
+	        {% else %}
+	        <div class="alert alert-danger text-center">
+	            登陆状态：{{descript}}
+	            </br>
+	            操作建议：{{suggest}}
+	            </br>
+	            {% if status != 200 and status != 222 %}
+	            uuid：{{uuid}}
+	            {% endif %}
+	        </div>
+	        {% endif %}
+        </ul>
+    </div>
+</nav>

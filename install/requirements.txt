@@ -1,0 +1,12 @@
+APScheduler
+django == 1.10
+django-bootstrap
+django-bootstrap-form
+django-bootstrap-toolkit
+django-crontab
+django-pagination
+djangorestframework
+django-template-utils 
+mysqlclient
+Pillow
+requests
