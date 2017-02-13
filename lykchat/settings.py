@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = (
-    ('* * * * *', 'library.cron.wechat.cronwx_checklogin', '>>/dev/shm/lykchat.txt 2>&1'),
+    ('*/10 * * * *', 'library.cron.wechat.cronwx_checklogin', '>>/dev/shm/lykchat.txt 2>&1'),
 )
 
 MIDDLEWARE = [

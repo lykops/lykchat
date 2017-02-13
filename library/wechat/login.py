@@ -1,5 +1,6 @@
 import json, time, re , random , xml.dom.minidom
 
+from library.config import wechat
 from library.visit_url.request.session import Request_Url
 
 
@@ -12,20 +13,10 @@ class Login():
         self.redirect_uri = redirect_uri
         self.login_info = login_info
         self.web_request_base_dict = web_request_base_dict
-        self.emoji_regex = r'<span class="emoji emoji(.{1,10})"></span>'
+        # self.emoji_regex = r'<span class="emoji emoji(.{1,10})"></span>'
+        self.emoji_regex = r'<span(.*)></span>'
+        self.field_list = wechat.friendlist_field_list
 
-        '''
-        self.friend_dict = {}
-        self.field_list = ['UserName', 'NickName', 'Alias', 'Sex']
-        # self.field_list = ['UserName', 'NickName', 'RemarkName', 'Alias', 'RemarkPYQuanPin', 'RemarkPYInitial', 'Sex']
-        # 需要的字段
-        # Alias，微信号
-        # RemarkName 好友备注名字
-        # RemarkPYQuanPin , 好友备注名字全拼
-        # RemarkPYInitial，好友备注名字拼音缩写
-        '''
- 
- 
     def _init_login(self):
         '''
         扫码、点击确认之后的第一步
@@ -37,7 +28,7 @@ class Login():
         url_req = open_url.return_context()
         self.login_info['url'] = self.redirect_uri[:self.redirect_uri.rfind('/')]
         # self.login_info['url'] = self.login_info['redirect_uri'][:self.login_info['redirect_uri'].rfind('/')]
-        
+
         self.login_info['deviceid'] = 'e' + repr(random.random())[2:17]
         self.login_info['msgid'] = int(time.time() * 1000 * 1000 * 10)
         self.login_info['BaseRequest'] = {}
@@ -59,7 +50,7 @@ class Login():
                     self.login_info['message'] = ''
             elif node.nodeName == 'isgrayscale':
                 self.login_info['isgrayscale'] = self.login_info['BaseRequest']['isgrayscale'] = node.childNodes[0].data
-
+                
         if self.login_info['BaseRequest'] == {} :
             self.status = 500
             if self.is_text == True :
@@ -82,12 +73,14 @@ class Login():
         '''
         self.base_url = self.login_info['url']
         self.base_request = self.login_info['BaseRequest']
+        '''
         self.skey = self.login_info['skey']
         self.sid = self.login_info['wxsid']
         self.uin = self.login_info['wxuin']
         self.deviceid = self.login_info['deviceid']
         self.sync_url = self.login_info['sync_url']
         self.pass_ticket = self.login_info['pass_ticket']
+        '''
 
         url = '%s/webwxinit?r=%s' % (self.base_url, int(time.time()))
         data = { 'BaseRequest': self.base_request }
@@ -95,46 +88,45 @@ class Login():
         
         open_url = Request_Url(url, data=data, **self.web_request_base_dict)
         url_req = open_url.return_context()
-    
-        self.web_dict = json.loads(url_req.content.decode('utf-8', 'replace'))
-        '''
-            web_dict的所有key为：
-                ChatSet
-                ContactList
-                User
-                ClickReportInterval
-                BaseResponse
-                GrayScale
-                SyncKey
-                SystemTime
-                SKey
-                ClientVersion
-                InviteStartCount
-                Count
-                MPSubscribeMsgCount
-                MPSubscribeMsgList    
-        '''
+        web_dict = json.loads(url_req.content.decode('utf-8', 'replace'))
 
         self.login_info['myself'] = {}
-        for key , value in self.web_dict.items() :
+        for key , value in web_dict.items() :
             if key == 'User' :
                 # 微信号信息
-                for field in ['UserName', 'NickName', 'Sex']:
+                for field in self.field_list:
                     try :
                         self.login_info['myself'][field] = value[field].replace(self.emoji_regex , '')
                     except :
-                        self.login_info['myself'][field] = value[field]
-                        
-                for field in ['Alias']:
-                    self.login_info['myself'][field] = ''
+                        try :
+                            self.login_info['myself'][field] = value[field]
+                        except :
+                            self.login_info['myself'][field] = ''
     
             if key == 'SyncKey' : 
-                self.login_info[key] = self.web_dict[key]
-    
-        self.login_info['InviteStartCount'] = int(self.web_dict['InviteStartCount'])
-        self.login_info['BaseRequest'] = self.web_dict['BaseResponse']
+                self.login_info[key] = web_dict[key]
+                
+                # web_dict['SyncKey']['List']中的key为1000不能{'Key': 1000, 'Val': 0}
+                temp_list = web_dict[key]['List']
+                for temp in temp_list :
+                    if temp['Key'] == 1000 and temp['Val'] == 0:
+                        print(temp)
+                        return self._get_wxinfo()
+
+        self.login_info['InviteStartCount'] = int(web_dict['InviteStartCount'])
+        self.login_info['BaseRequest'] = web_dict['BaseResponse']
+        #self.login_info['synckey'] = '|'.join(['%s_%s' % (k, v) for k, v in self.login_info['SyncKey'].items()])
         self.login_info['synckey'] = '|'.join(['%s_%s' % (k, v) for k, v in self.login_info['SyncKey'].items()])
 
+        firstpage_contactlist = []
+        for contact in web_dict['ContactList'] :
+            contact_list = {}
+            for field in self.field_list:
+                contact_list[field] = contact[field]
+            firstpage_contactlist.append(contact_list)
+        self.login_info['firstpage_contactlist'] = firstpage_contactlist
+        # 第一页好友列表
+        
 
     def get_logininfo(self):
         '''
@@ -146,19 +138,11 @@ class Login():
         
         self._get_wxinfo()
         return self.login_info
-    
-    
-    def get_firstpage_contactlist(self):
-        '''
-        返回第一页好友列表
-        '''
-        self._get_wxinfo()
-        return self.web_dict['ContactList']
 
 
     def check_login(self):
         '''
         检查是否在线
-        '''
+        '''        
         self._get_wxinfo()
         return self.login_info['BaseRequest']

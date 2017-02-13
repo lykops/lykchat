@@ -46,3 +46,17 @@ sendresult_translation_dict = {
         0: u'发送成功',
     },
 }
+
+
+friendlist_field_list = ['UserName', 'NickName', 'Alias', 'Sex', 'RemarkName']
+'''
+好友列表展示的信息
+self.field_list = ['UserName', 'NickName', 'RemarkName', 'Alias', 'RemarkPYQuanPin', 'RemarkPYInitial', 'Sex']
+需要的字段
+UserName，每个好友的唯一标示
+NickName，个人设置的昵称，重复可能性很大
+Alias，微信号，如果没有设置为空，不会出现重复
+RemarkName 好友备注名字
+RemarkPYQuanPin , 好友备注名字全拼
+RemarkPYInitial，好友备注名字拼音缩写
+'''

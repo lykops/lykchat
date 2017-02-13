@@ -51,15 +51,26 @@ def cronwx_checklogin():
     from datetime import datetime
     print('开始执行微信检查登陆状态的计划任务! 现在时间: %s' % datetime.now())
 
-    login_session_list = cronwx_getsession()
-    if login_session_list == {} or not login_session_list :
-        print('没有微信号登陆')
-    else :
-        for session_info_dict in login_session_list :
-            check_login = Cronwx_Checksingle(session_info_dict)
-            check_thread = threading.Thread(target=check_login.run_thread)
-            check_thread.start()
-
+    count = 0 
+    while 1 :
+        print()
+        print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+        if count == 10 :
+            exit(0)
+            break
+        
+        count += 1
+        login_session_list = cronwx_getsession()
+        if login_session_list == {} or not login_session_list :
+            print('没有微信号登陆')
+        else :
+            for session_info_dict in login_session_list :
+                check_login = Cronwx_Checksingle(session_info_dict)
+                check_thread = threading.Thread(target=check_login.run_thread)
+                check_thread.start()
+            
+            time.sleep(58)
+            
 
 class Cronwx_Checksingle():
     def __init__(self, session_info_dict):
@@ -79,12 +90,14 @@ class Cronwx_Checksingle():
         checklogin_thread.start()
         # 检查登陆
 
-        while 1 :          
+        count = 0
+        while 1 :      
             self._receive()
             time.sleep(5)
-            if int(time.time()) % 60 >= 53:
+            if count == 60 / 5 - 1:
                 exit(0)
                 break
+            count += 1    
             
 
     def _receive(self):
@@ -119,6 +132,8 @@ class Cronwx_Checksingle():
                 cronwx_clearsession(uuid=self.uuid)
         except :
             pass
+        
+        exit(0)
 
 
 def cronwx_clearsession(uuid=''):

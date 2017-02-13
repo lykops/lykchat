@@ -1,5 +1,6 @@
 import json, time, re
 
+from library.config import wechat
 from library.visit_url.request.session import Request_Url
 
 from .login import Login
@@ -14,6 +15,7 @@ class Get_Friend():
         self.base_request = self.login_info['BaseRequest']
         self.pass_ticket = login_info['pass_ticket']
         self.skey = self.login_info['skey']
+        self.firstpage_contactlist = self.login_info['firstpage_contactlist']
         '''
         self.sid = self.login_info['wxsid']
         self.uin = self.login_info['wxuin']
@@ -21,17 +23,7 @@ class Get_Friend():
         self.sync_url = self.login_info['sync_url']
         '''
         
-        self.field_list = ['UserName', 'NickName', 'Alias', 'Sex', 'RemarkName']
-        '''
-        self.field_list = ['UserName', 'NickName', 'RemarkName', 'Alias', 'RemarkPYQuanPin', 'RemarkPYInitial', 'Sex']
-        需要的字段
-        UserName，每个好友的唯一标示
-        NickName，个人设置的昵称，重复可能性很大
-        Alias，微信号，如果没有设置为空，不会出现重复
-        RemarkName 好友备注名字
-        RemarkPYQuanPin , 好友备注名字全拼
-        RemarkPYInitial，好友备注名字拼音缩写
-        '''
+        self.field_list = wechat.friendlist_field_list
 
         if friend_list == {} :
             for field in self.field_list:
@@ -128,8 +120,9 @@ class Get_Friend():
         '''
         通过微信第一页好友列表获取好友，追加好友
         '''
-        wx_init = Login(self.web_request_base_dict, login_info=self.login_info)
-        contact_list = wx_init.get_firstpage_contactlist()
+        # wx_init = Login(self.web_request_base_dict, login_info=self.login_info)
+        # contact_list = wx_init.get_firstpage_contactlist()
+        contact_list = self.firstpage_contactlist
 
         for contact in contact_list :
             self._update_friend(contact)
@@ -187,8 +180,9 @@ class Get_Friend():
         '''
         my_user = self.login_info['myself']['UserName']
 
-        wx_init = Login(self.web_request_base_dict, login_info=self.login_info)
-        contact_list = wx_init.get_firstpage_contactlist()
+        # wx_init = Login(self.web_request_base_dict, login_info=self.login_info)
+        # contact_list = wx_init.get_firstpage_contactlist()
+        contact_list = self.firstpage_contactlist
 
         for contact in contact_list :
             contact_user = contact['UserName']
