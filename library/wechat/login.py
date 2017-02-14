@@ -17,6 +17,7 @@ class Login():
         self.emoji_regex = r'<span(.*)></span>'
         self.field_list = wechat.friendlist_field_list
 
+
     def _init_login(self):
         '''
         扫码、点击确认之后的第一步

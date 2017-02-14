@@ -3,8 +3,6 @@ import json, time, re
 from library.config import wechat
 from library.visit_url.request.session import Request_Url
 
-from .login import Login
-
 
 class Get_Friend():
     def __init__(self , login_info, web_request_base_dict, friend_list={}):
@@ -74,7 +72,7 @@ class Get_Friend():
         return self.friend_list
 
 
-    def get_friend_dict(self, friend, post_field='UserName'):
+    def get_singlefriend_dict(self, friend, post_field='UserName'):
         '''
         好友信息进行转化，把现有字段post_field转化从字典
         '''        
@@ -106,7 +104,7 @@ class Get_Friend():
         '''
         好友信息进行转化，把现有字段post_field转化需要获得字段get_field
         '''
-        friend_dict = self.get_friend_dict(friend, post_field)
+        friend_dict = self.get_singlefriend_dict(friend, post_field)
         if friend_dict == {}:
             return 'error'
         else :
@@ -286,3 +284,106 @@ class Get_Friend():
                 except :
                     value = ''
                 self.friend_list[field].append(value)
+
+
+    def get_friend_dict(self, friend_list={}):
+        '''
+        用于web页面展示
+        '''
+        if friend_list == {} or friend_list == '' or not friend_list :
+            friend_list = self.get_friend_list()
+
+        friend_dict = {}
+        try :
+            nickname_list = friend_list['NickName'][1:]
+            alias_list = friend_list['Alias'][1:]
+            username_list = friend_list['UserName'][1:]
+            sex_list = friend_list['Sex'][1:]
+            remarkname_list = friend_list['RemarkName'][1:]
+        except :
+            return friend_dict
+        
+        regex = r'<span(.*)></span>'
+        rereobj = re.compile(regex)  
+        
+        # 系统账号
+        for i in range(len(username_list)) :
+            username = username_list[i]
+            if not re.search('@' , username) and username == 'filehelper' :
+                friend_dict[username] = '自己'
+
+
+        for i in range(len(username_list)) :
+            username = username_list[i]
+            alias = alias_list[i]
+            nickname = nickname_list[i]
+            
+            # 昵称去掉图片等字符
+            nickname = rereobj.subn('', nickname)[0]
+            nickname = nickname.replace(r'  ' , '')
+            
+            sex = sex_list[i]
+            remarkname = remarkname_list[i]
+            if nickname == remarkname :
+                remarkname = ''
+            
+            if sex != 0 and (re.search('@' , username) and not re.search('@@' , username)):
+                if alias == '' or not alias :
+                    if remarkname == '' or not remarkname :
+                        friend_dict[username] = '好友--昵称：' + nickname
+                    else :
+                        friend_dict[username] = '好友--昵称：' + nickname + '--备注：' + remarkname
+                else :
+                    if remarkname == '' or not remarkname :
+                        friend_dict[username] = '好友--昵称：' + nickname + '--微信号：' + alias
+                    else :
+                        friend_dict[username] = '好友--昵称：' + nickname + '--备注：' + remarkname + '--微信号：' + alias
+
+        for i in range(len(username_list)) :
+            username = username_list[i]
+            alias = alias_list[i]
+            nickname = nickname_list[i]
+            
+            # 昵称去掉图片等字符
+            nickname = rereobj.subn('', nickname)[0]
+            nickname = nickname.replace(r'  ' , '')
+            
+            sex = sex_list[i]
+            remarkname = remarkname_list[i]
+            if nickname == remarkname :
+                remarkname = ''
+            
+            if sex == 0 and (re.search('@' , username) and not re.search('@@' , username)):
+                # 公众号或者没有设置性别的好友
+                if len(username) >= 50 and alias != 'weixingongzhong':
+                    if alias == '' or not alias :
+                        if remarkname == '' or not remarkname :
+                            friend_dict[username] = '疑似好友--昵称：' + nickname
+                        else :
+                            friend_dict[username] = '疑似好友--昵称：' + nickname + '--备注：' + remarkname
+                    else :
+                        if remarkname == '' or not remarkname :
+                            friend_dict[username] = '疑似好友--昵称：' + nickname + '--微信号：' + alias
+                        else :
+                            friend_dict[username] = '疑似好友--昵称：' + nickname + '--备注：' + remarkname + '--微信号：' + alias
+                else :
+                    continue
+                    if alias == '' or not alias :
+                        if remarkname == '' or not remarkname :
+                            friend_dict[username] = '公众号--昵称：' + nickname
+                        else :
+                            friend_dict[username] = '公众号--昵称：' + nickname + '--备注：' + remarkname
+                    else :
+                        if remarkname == '' or not remarkname :
+                            friend_dict[username] = '公众号--昵称：' + nickname + '--微信号：' + alias
+                        else :
+                            friend_dict[username] = '公众号--昵称：' + nickname + '--备注：' + remarkname + '--微信号：' + alias
+
+        for i in range(len(username_list)) :
+            username = username_list[i]
+            nickname = nickname_list[i]
+
+            if re.search('@@' , username):
+                friend_dict[username] = '群--' + '昵称:' + nickname
+        
+        return friend_dict

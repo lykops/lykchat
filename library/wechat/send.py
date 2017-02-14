@@ -33,7 +33,7 @@ class Send_Msg():
         发送信息，返回类型为字典
         '''
         get_friend = Get_Friend(self.login_info, self.web_request_base_dict)
-        friend_dict = get_friend.get_friend_dict(tousername, post_field=post_field)
+        friend_dict = get_friend.get_singlefriend_dict(tousername, post_field=post_field)
 
         try :
             tousername = friend_dict['UserName']
@@ -64,6 +64,7 @@ class Send_Msg():
         
         result_dict = self._send_result(url_req)
         result_dict['content'] = content
+        '''
         result_dict['tousername'] = tousername
         # 接受者用户名，例如@b90ca8dd73832b52edd6ff512d5393731f5a0a42379c850cce825c42d578c182
         alias = friend_dict['Alias']
@@ -80,6 +81,7 @@ class Send_Msg():
                 result_dict['touser'] = '昵称：' + nickname + '--微信号：' + alias
             else :
                 result_dict['touser'] = '昵称：' + nickname + '--备注：' + remarkname + '--微信号：' + alias
+        '''
                 
         result_dict['friend_dict'] = friend_dict
                         

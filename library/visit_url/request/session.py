@@ -31,7 +31,7 @@ class Request_Url():
                 # print('post')
                 # post方法
             else :
-                url_req = session.post(self.url, headers=headers, cookies=cookies , allow_redirects=allow_redirects, params=params)
+                url_req = session.get(self.url, headers=headers, cookies=cookies , allow_redirects=allow_redirects, params=params)
                 # print('get')
                 # get方法
         except Exception as e :
