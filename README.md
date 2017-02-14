@@ -93,7 +93,10 @@ web界面已实现的功能说明：
 		下载程序，解压到/opt/
 		/usr/local/python36/bin/pip3 install -r /opt/lykchat/install/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 	
-	4、配置计划任务
+	4、初始化数据库和配置计划任务
+		/usr/local/python36/bin/python3 /opt/lykchat/manage.py makemigrations
+		/usr/local/python36/bin/python3 /opt/lykchat/manage.py migrat
+		
 		/usr/local/python36/bin/python3 /opt/lykchat/manage.py crontab add
 		crontab -l
 		如果有类似这条
