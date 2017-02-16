@@ -39,23 +39,25 @@ class Login_Wechat():
         self.uuid = self._return_info_key('uuid')
         self.redirect_uri = self._return_info_key('redirect_uri')
         self.login_info = self._return_info_key('login_info')
-        self.web_request_base_dict = self._return_info_key('web_request_base_dict')
+        self.web_request_dict = self._return_info_key('web_request_dict')
         self.login_stamptime = self._return_info_key('login_stamptime')
         self.qr_stamptime = self._return_info_key('qr_stamptime')
         self.change_stamptime = self._return_info_key('change_stamptime')
-        self.Alias = self._return_info_key('Alias')
-        self.NickName = self._return_info_key('NickName')
+        self.alias = self._return_info_key('alias')
+        self.nickname = self._return_info_key('nickname')
         self.qr_url = self._return_info_key('qr_url')
 
 
     def _return_info_key(self, key):
-        try : 
-            if self.status == 100 or self.status > 400 :
-                return False
-            else :
-                return self.session_info_dict[key]
-        except :
+        if self.status == 100 or self.status > 300 :
             return False
+        else :
+            try :
+                value = self.session_info_dict[key]
+            except :
+                value = False
+                
+            return value
 
 
     def lykchat(self, request):
@@ -80,7 +82,7 @@ class Login_Wechat():
     def logout(self, request):
         self._init_param(request)
         if self.status == 222 :
-            wx_logout = Logout(self.web_request_base_dict, self.login_info)
+            wx_logout = Logout(self.web_request_dict, self.login_info)
             wx_logout.logout()
             self.session_info_dict['status'] = self.status = 444
             display_html_dict = self._displayhtml(request)
@@ -105,7 +107,9 @@ class Login_Wechat():
             'friendfield':'接受者的字段代号，{0:"NickName" , 1:"Alias" , 2:"RemarkName"}，可以为空，默认为0 ',
             'friend':'接受者的昵称、别名、备注名的其中一个，不能为空',
             'content':'发送内容，不能为空',
+            'url' : '/sendmsg?friendfield=1&friend=lykops724&content=test'
         }
+        
         send_result = {}
         self._init_param(request)
         request_dict = {}
@@ -113,31 +117,21 @@ class Login_Wechat():
             send_result = {'retcode': 1101 , 'errmsg' : '微信还未登录或者退出登录' }
 
         key_list = ['fromalias', 'friendfield', 'friend', 'content']        
-        if request.method == 'GET' :
-            for key in key_list :
-                try :
+        for key in key_list :
+            try :
+                if request.method == 'GET' :
                     request_dict[key] = request.GET[key]
-                except :
-                    if key == 'friend' :
-                        send_result = {'ResultCode':-1005 , 'ErrMsg' : '接受者不能为空', 'parameter_dict' : parameter_dict}
-                    else :
-                        request_dict[key] = False
-        else :
-            for key in key_list :
-                try :
+                else :
                     request_dict[key] = request.POST[key]
-                except :
-                    if key == 'friend' :
-                        send_result = {'ResultCode':-1005 , 'ErrMsg' : '接受者不能为空', 'parameter_dict' : parameter_dict}
-                        request_dict[key] = 'filehelper'
-                    else :
-                        request_dict[key] = False
-        
-        if request_dict['content'] == '' or not request_dict['content'] :
-            send_result = {'ResultCode':-1005 , 'ErrMsg' : '内容不能为空', 'parameter_dict' : parameter_dict}
+            except :
+                if key == 'friend':
+                    send_result = {'ResultCode':-1005 , 'ErrMsg' : '接受者不能为空', 'parameter_dict' : parameter_dict}
+                elif key == 'content' :
+                    send_result = {'ResultCode':-1005 , 'ErrMsg' : '内容不能为空', 'parameter_dict' : parameter_dict}
+                else :
+                    request_dict[key] = False
 
         friendfield_dict = {0:'NickName' , 1:'Alias' , 2:'RemarkName'}   
-        
         try :     
             if request_dict['friend'] == 'filehelper' :
                 tousername = 'filehelper'
@@ -165,22 +159,19 @@ class Login_Wechat():
         '''
         初始化，获取uuid、cookies、session、二维码等等
         '''
-        if (not self.uuid or self.uuid == '') or (self.web_request_base_dict == {} or not self.web_request_base_dict):
+        if (not self.uuid or self.uuid == '') or (self.web_request_dict == {} or not self.web_request_dict):
             wx_ready = Ready(is_text=self.is_text)
-            (self.uuid, self.web_request_base_dict) = wx_ready.return_basicinfo_dict()
+            (self.uuid, self.web_request_dict) = wx_ready.return_basicinfo_dict()
         else :
-            wx_ready = Ready(uuid=self.uuid, web_request_base_dict=self.web_request_base_dict, is_text=self.is_text)
+            wx_ready = Ready(uuid=self.uuid, web_request_base_dict=self.web_request_dict, is_text=self.is_text)
     
-        self.qr_file = wechat.qr_dir + '/' + self.uuid + '.jpg'
-        if not os.path.exists(self.qr_file) or not os.path.isfile(self.qr_file) :
-            self.qr_file = wx_ready.get_qr()
-        
+        (self.uuid, self.web_request_dict) = wx_ready.return_basicinfo_dict()
+        self.qr_file = wx_ready.get_qr()
         self.qr_url = self.qr_file.replace(BASE_DIR, '')
-        (self.uuid, self.web_request_base_dict) = wx_ready.return_basicinfo_dict()
+            
         self.status = 202
-    
         self.session_info_dict['uuid'] = self.uuid
-        self.session_info_dict['web_request_base_dict'] = self.web_request_base_dict
+        self.session_info_dict['web_request_dict'] = self.web_request_dict
         self.session_info_dict['status'] = self.status
         self.session_info_dict['qr_url'] = self.qr_url
         self.session_info_dict['qr_stamptime'] = int(time.time())
@@ -195,7 +186,7 @@ class Login_Wechat():
         '''
         count = 0
         while 1:
-            wx_ready = Ready(uuid=self.uuid, web_request_base_dict=self.web_request_base_dict, is_text=self.is_text)
+            wx_ready = Ready(uuid=self.uuid, web_request_base_dict=self.web_request_dict, is_text=self.is_text)
             (self.status, self.redirect_uri) = wx_ready.check_status()
             self.session_info_dict['status'] = self.status
             self.session_info_dict['redirect_uri'] = self.redirect_uri
@@ -230,7 +221,7 @@ class Login_Wechat():
         count = 0
         while 1 :
             if self.login_info == {} or not self.login_info:
-                wx_login = Login(self.web_request_base_dict, redirect_uri=self.redirect_uri, is_text=self.is_text)
+                wx_login = Login(self.web_request_dict, redirect_uri=self.redirect_uri, is_text=self.is_text)
                 self.login_info = wx_login.get_logininfo()
                 self.status = 200
             else :
@@ -283,7 +274,7 @@ class Login_Wechat():
         '''
         检查是否保持登陆状态
         '''
-        wx_login = Login(self.web_request_base_dict, login_info=self.login_info, is_text=self.is_text)
+        wx_login = Login(self.web_request_dict, login_info=self.login_info, is_text=self.is_text)
         status_dict = wx_login.check_login()
         status = status_dict['Ret']
         if status == 0 :
@@ -343,7 +334,7 @@ class Login_Wechat():
     
     def _get_friend_dict(self):
         # 好友列表不能被缓存，否则登陆久了无法发送信息
-        get_friend = Get_Friend(self.login_info, self.web_request_base_dict)
+        get_friend = Get_Friend(self.login_info, self.web_request_dict)
         friend_list = get_friend.get_friend_list()
         friend_dict = get_friend.get_friend_dict(friend_list=friend_list)
         self.session_info_dict['nickname'] = friend_list['NickName'][0]
@@ -355,7 +346,7 @@ class Login_Wechat():
         '''
         发送信息，处理返回值
         '''
-        send_msg = Send_Msg(self.login_info, self.web_request_base_dict)
+        send_msg = Send_Msg(self.login_info, self.web_request_dict)
         send_result_dict = send_msg.send(content, tousername=tousername, post_field=post_field)
 
         if send_result_dict['ResultCode'] == -1 :
@@ -376,7 +367,6 @@ class Operate_Session():
     def __init__(self):
         self.session_field_list = wechat.session_field_list
         self.is_text = False
-        self.display_html = 'wechat.html'
         self.session_type = wechat.session_type
 
 
@@ -384,74 +374,75 @@ class Operate_Session():
         '''
         更新的session，如果状态退出，设置为空
         '''
-        is_change = 0
         status = info_dict['status']
-        print(status)
+        print('开始更新会话')
+        print('当前登陆状态为：' + str(status))
         if status < 300 :
             for session_field in self.session_field_list :
                 try :
                     # if request.session[session_field] != info_dict[session_field] :
                     # 不能用这个if，导致刷新页面无法获得会话值
                     request.session[session_field] = info_dict[session_field]
-                    is_change = 1
                 except:
                     if session_field == 'type' :
                         request.session[session_field] = self.session_type
                     else :
-                        # request.session[session_field] = ''
-                        try :
-                            del request.session[session_field]
-                        except :
-                            pass
-                    is_change = 1
-                
-            if is_change == 1 or self.status == 222:
-                request.session['change_stamptime'] = int(time.time())
+                        request.session[session_field] = ''
+
+            request.session['change_stamptime'] = int(time.time())
         else :
             self._clear_expire(request)
-
-        return ''
-
+            
 
     def get_info(self, request):
         '''
         获取微信登陆信息
         '''
-        uuid = self._get_current_key(request, 'uuid')
-        status = self._get_current_key(request, 'status')
-        if status == False :
-            status = 100
-        else :
-            status = int(status)
-
-        info_dict = {}
+        curr_dict = {}
+        for session_field in self.session_field_list :
+            curr_dict[session_field] = self._get_current_key(request, session_field)
+        
+        uuid = curr_dict['uuid']
+        status = curr_dict['status']
+        status = int(status)
+        print('开始查找会话')
+        print('会话保存的登陆状态为：' + str(status))
+        if (uuid and uuid != '') :
+            if not status or status <= 100:
+                # 非登陆成功的使用历史会话
+                status = 100
+            elif status == 222 or status == 201 or status == 200 :
+                # 登陆成功、扫码之后等状态使用自己的会话；
+                return curr_dict
+            elif status == 202 or (status > 100 and status < 200) :
+                # 获取登陆信息之后，还没有扫描之前状态，使用自己的会话
+                return curr_dict
+            elif status >= 300:
+                # 退出状态，返回空
+                return {}
+            else :
+                # 非登陆成功的使用历史会话
+                status = int(status)
+            
         history_info = self._get_history_newest(uuid=uuid)
         if (not uuid or uuid == False):
             # 该session没有登陆过,去查找历史session
             if history_info != {} :
-                info_dict = history_info
+                curr_dict = history_info
             else :
-                info_dict = {}
-        else :     
-            # 登陆成功、扫码之后等状态使用自己的会话；非登陆成功的使用历史会话
-            if status == 222 or status == 201 or status == 200:
-                for session_field in self.session_field_list : 
-                    info_dict[session_field] = self._get_current_key(request, session_field)
-            elif status >= 300:
-                info_dict = {}
-                # 退出登录，字典为空
-            else :
-                for session_field in self.session_field_list :
-                    try :
-                        info_dict[session_field] = history_info[session_field]
-                    except :
-                        info_dict[session_field] = False
+                return {}
+        else :
+            for session_field in self.session_field_list :
+                try :
+                    curr_dict[session_field] = history_info[session_field]
+                except :
+                    curr_dict[session_field] = False
                     
-        session_status = self._check_timeout(request, info_dict)
+        session_status = self._check_timeout(request, curr_dict)
         if not session_status :
-            info_dict = {}
+            curr_dict = {}
                     
-        return info_dict
+        return curr_dict
     
     
     def _get_current_key(self, request, key):
@@ -468,33 +459,59 @@ class Operate_Session():
         '''
         清理过期回话信息
         '''
-        # uuid = session_info_dict['uuid']
-        # currency_session_key = request.session.session_key
-        # 删除掉指定uuid的历史回话（除自己外），注意：在清理回话时不能删除自己的回话，否则页面报错
-        # if uuid and uuid != '' :
-        if 1 :
-            from django.contrib.sessions.models import Session
-            import datetime
+        from django.contrib.sessions.models import Session
+        import datetime
+        
+        alias = self._get_current_key(request, 'alias')
+        nickname = self._get_current_key(request, 'nickname')
+        if not alias and not nickname :
+            pass
+        else :
             online_sessions = Session.objects.filter(expire_date__gte=datetime.datetime.now())
             for session in online_sessions :
                 # 这里的session不要改名，否则报错
-                try :
-                    history_session_info = session.get_decoded()
-                    '''
-                    if str(session) == str(currency_session_key):
-                        # 在清理回话时不能删除自己的回话，否则页面报错，需要把这两个字符串化
-                        request.session.set_expiry(1) 
-                        # 设置超时
-                    '''
-                    
-                    if history_session_info['type'] == 'web_wechat_login': 
-                        request.session.set_expiry(1) 
-                        # 设置超时
-                        # Session.objects.get(session_key=session).delete() 
-                except Exception as e:
-                    print(e)
-                    pass
+                history_session_info = session.get_decoded()
+                if history_session_info['type'] == self.session_type: 
+                    try :
+                        Session.objects.get(session_key=session).delete() 
+                        print('删除回话成功' + str(session))
+                        # 删除回话
+                    except Exception as e:
+                        print('删除回话失败' + str(session))
+                        print(e)
+                        try : 
+                            request.session.set_expiry(1) 
+                            print('设置回话超时成功' + str(session))
+                            # 设置超时
+                        except  Exception as e:
+                            print(e)
+                            print('清理回话失败' + str(session))
 
+        online_sessions = Session.objects.filter(expire_date__gte=datetime.datetime.now())
+        for session in online_sessions :
+            history_session_info = session.get_decoded()
+            try :
+                status = history_session_info['status']
+                qr_stamptime = history_session_info['qr_stamptime']
+                qr_second = int(time.time()) - int(qr_stamptime)
+                change_stamptime = history_session_info['change_stamptime']
+                change_second = int(time.time()) - int(change_stamptime)
+            except :
+                continue
+             
+            # 清理历史没有扫描登陆状态回话，否则导致无法获取正在的信息
+            if history_session_info['type'] == self.session_type:
+                if (status < 200 or status == 202) and qr_second > 240 and change_second > 60:
+                    try :
+                            request.session.set_expiry(1) 
+                            print('删除未扫描的回话成功' + str(session))
+                            # 删除回话
+                    except Exception as e:
+                        print(e)
+                        print('清理未扫描的回话失败' + str(session))
+
+        request.session.set_expiry(1)
+        
 
     def _check_timeout(self, request, info_dict):
         '''
@@ -536,16 +553,22 @@ class Operate_Session():
         for session in online_sessions :
             # 这里的session不要改名，否则报错
             history_session_info = session.get_decoded()
-    
+            print('查找会话的信息：' + str(session))
+            
             try :
                 old_type = history_session_info['type']
+                old_uuid = history_session_info['uuid']
+                old_status = history_session_info['status']
                 if old_type != 'web_wechat_login' :
                     break
                 
-                old_uuid = history_session_info['uuid']
                 if (uuid != '' and uuid) and uuid != old_uuid :
                     break
     
+                if old_status != 222  :
+                    # 只获取登陆成功的会话信息
+                    break
+                
                 change_stamptime = history_session_info['change_stamptime']
                 change_stamptime = int(change_stamptime)
                 

@@ -92,7 +92,7 @@ class Ready():
                 status = 500
                 break
             
-            if count == 5 :
+            if count == 10 :
                 break
             
             count += 1

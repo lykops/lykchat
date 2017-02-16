@@ -48,7 +48,7 @@ sendresult_translation_dict = {
 }
 
 
-session_field_list = ['uuid', 'status', 'redirect_uri', 'login_info', 'web_request_base_dict', 'login_stamptime', 'qr_stamptime', 'type' , 'nickname', 'alias', 'qr_url' ]
+session_field_list = ['uuid', 'status', 'redirect_uri', 'login_info', 'web_request_dict', 'login_stamptime', 'qr_stamptime', 'type' , 'nickname', 'alias', 'qr_url' ]
 # 会话需要保持的字段
 
 friendlist_field_list = ['UserName', 'NickName', 'Alias', 'Sex', 'RemarkName']

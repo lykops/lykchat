@@ -77,7 +77,7 @@ class Cronwx_Checksingle():
         self.session_info_dict = session_info_dict
         self.login_info = session_info_dict['login_info']
         self.uuid = session_info_dict['uuid']
-        self.web_request_base_dict = session_info_dict['web_request_base_dict']
+        self.web_request_base_dict = session_info_dict['web_request_dict']
         wx_friend = Get_Friend(self.login_info, self.web_request_base_dict)
         self.friend_list = wx_friend.get_friend_list()
         self.alias = self.friend_list['Alias'][0]
