@@ -18,7 +18,26 @@ web界面已实现的功能说明：
 		例子：http://192.168.100.104/sendmsg?friendfield=1&friend=lyk-ops&content=测试
 		执行之后返回一个json格式的字典，包含发送结果代码【0为成功，其他均失败】，发送失败原因、好友信息等等
 
-	
+截图：
+![等待扫码 截图](https://github.com/lykops/lykchat/blob/master/doc/等待扫码.jpg)
+等待扫码 截图
+
+![二维码已失效 截图](https://github.com/lykops/lykchat/blob/master/doc/二维码已失效.jpg)
+二维码已失效 截图
+
+![登陆成功之后 截图](https://github.com/lykops/lykchat/blob/master/doc/登陆成功之后.jpg)
+登陆成功之后 截图
+
+![发送信息截图 截图](https://github.com/lykops/lykchat/blob/master/doc/发送信息截图.jpg)
+发送信息截图 截图
+
+![好友列表截图 截图](https://github.com/lykops/lykchat/blob/master/doc/好友列表截图.jpg)
+好友列表截图 截图
+
+![接口发送信息 截图](https://github.com/lykops/lykchat/blob/master/doc/接口发送信息.jpg)
+接口发送信息 截图
+
+
 命令行已实现的功能说明：
 
 	扫码登陆、显示登陆状态、接受好友信息、发送信息（目前只能发送给“文件传输助手”）
@@ -61,53 +80,4 @@ web界面已实现的功能说明：
 	数据库：MySQL，用于存储缓存。测试环境为5.7.17
 	
 
-安装步骤：
-
-	1、安装和配置运行环境：
-		关闭selinux
-		安装nginx、MySQL
-		配置nginx服务器，conf/nginx.conf，添加
-		    location / {
-		        proxy_redirect off;
-		        proxy_pass_header Server;
-		        proxy_set_header Host $http_host;
-		        proxy_set_header X-Scheme $scheme;
-		        proxy_set_header X-Real-IP $remote_addr;
-		        proxy_pass http://localhost:8000;
-		    }
-		    location /static/ {
-		        alias /opt/lykchat/static/;
-		    }
-
-		配置mysql
-			新增一个数据库lykchat
-			设置用户lykchat，密码为!QAZ2wsx，把数据库lykchat的权限分配给用户lykchat
-
-	2、编译安装python
-		wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz -c
-		tar zxvf Python-3.6.0.tgz
-		cd Python-3.6.0
-		./configure --prefix=/usr/local/python36/ --enable-optimizations && make && make install
-
-	3、安装依赖包
-		下载程序，解压到/opt/
-		/usr/local/python36/bin/pip3 install -r /opt/lykchat/install/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-	
-	4、初始化数据库和配置计划任务
-		/usr/local/python36/bin/python3 /opt/lykchat/manage.py makemigrations
-		/usr/local/python36/bin/python3 /opt/lykchat/manage.py migrat
-		
-		/usr/local/python36/bin/python3 /opt/lykchat/manage.py crontab add
-		crontab -l
-		如果有类似这条
-			* * * * * /usr/bin/python3 /opt/lykchat/manage.py crontab run 6d8f0feaeaa440358a85dfc8d5efa2af >>/dev/shm/lykchat.txt 2>&1 # django-cronjobs for lykchat
-		说明OK
-
-		运行该计划任务，没有报错即可
-
-	5、启动服务
-		service mysqld restart
-		nginx
-		/usr/local/python36/bin/python3 /opt/lykchat/manage.py runserver 
-
-	6、访问ip地址即可
+![安装步骤](https://github.com/lykops/lykchat/wiki/%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4)
