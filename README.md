@@ -80,4 +80,4 @@ web界面已实现的功能说明：
 	数据库：MySQL，用于存储缓存。测试环境为5.7.17
 	
 
-![安装步骤](https://github.com/lykops/lykchat/wiki/%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4)
+![安装步骤请见wiki](https://github.com/lykops/lykchat/wiki/%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4)
