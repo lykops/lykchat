@@ -13,7 +13,7 @@
 	3、7*24不间断服务
 		计划任务定时检查微信登陆状态，微信保持登陆最长超过20天
 		微信登录信息共享
-	4、web管理页面
+	4、web管理页面 
 		web管理页面扫码登陆、显示登陆状态、选择好友发送信息等
 	5、用户管理
 		通过用户隔离微信个人号，不同用户管理不同微信号
@@ -32,7 +32,7 @@
 ![等待扫码 截图](https://raw.githubusercontent.com/lykops/lykchat/master/doc/微信登陆时间超过1天.jpg)
 
 
-发送信息接口
+接口-发送信息成功
 
 ![等待扫码 截图](https://raw.githubusercontent.com/lykops/lykchat/master/doc/接口-发送信息成功.jpg)
 
@@ -71,7 +71,25 @@
 		2）、好友信息缓存机制
 	4、取消功能：
 		接受和处理新信息
-		
+
+
+## 发送信息接口 ##
+	URL地址：http://IP（或者域名）/sendmsg
+	支持post和get方法
+	请求参数说明：
+		'username' : 管理用户，同管理web页面，通过用户确认微信发送者,
+        'pwd' : 接口密码，注意不等于登陆密码,
+        'friendfield'：接受信息的好友字段代号，{0:"NickName" , 1:"Alias" , 2:"RemarkName"}，可以为空，默认为0,
+        'friend': 接受信息的好友的昵称、微信号、备注名的其中之一，不能为空,
+        'content': 发送内容，不能为空
+		注意：
+			friend一定是该用户下的登陆微信好友列表中的
+			friendfield最好是微信号（Alias），也可以使用昵称（NickName）或者备注名（RemarkName），但不能重复
+	返回信息：
+		json格式，{'Msg': 执行结果, 'Code':返回代码, 'ErrMsg':如果-1005返回参数列表，其他发送微信返回信息}
+			常见code：0成功；-1101参数错误；-1102无法找到好友；1101微信号退出登录，其他为微信返回错误
+	例子：http://192.168.100.104/sendmsg?username=zabbix&pwd=123456&friendfield=1&friend=lyk-ops&content=test
+
  
 ## 说明 ##
 
