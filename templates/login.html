@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>lykchat信息发送系统</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    </head>
+
+	<body class="gray-bg">
+	    <div class="middle-box text-center loginscreen  animated fadeInDown">
+	        <div>
+	            <div><h1 class="logo-name"><img src="/static/img/logo.jpg"></h1></div>
+	            <h3>欢迎使用lykchat信息发送系统</h3>
+	            
+                {% if error_message %}
+                <div class="alert alert-danger text-center">{{ error_message }}</div>
+                {% endif %}
+	            
+	            </br>
+	            
+	            <form class="m-t" role="form" method="post" action="">
+	            {% csrf_token %}
+	                <div class="form-group">
+	                    <input type="text" name="username" class="form-control" placeholder="Username" required="length[4~15]">
+	                </div>
+	                <div class="form-group">
+	                    <input type="password" name="password" class="form-control" placeholder="Password" required="">
+	                </div>
+                    </br>
+	                <button type="submit" class="btn btn-primary block full-width m-b">登陆</button>
+	            </form>
+
+                </br>
+	           
+	            <p class="m-t"> <small>
+	            <b>Copyright</b> 
+	            <a href="mailto:liyingke112@126.com">liyingke112@126.com</a> 
+	            © 2017
+	            </small> </p>
+	        </div>
+	    </div>
+	</body>
+</html>

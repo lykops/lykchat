@@ -2,18 +2,20 @@
 
 {% block content %}
 <div class="wrapper wrapper-content animated fadeInRight">
-    当前服务器时间：{{nowtime}}
-    </br>
-    <h1 id="grp-admin-title">状态：{{descript}}     {% if status != 222 and status != 200 and status != 201 %}{{suggest}}{% endif %}    </h1> 
+    当前服务器时间：{{nowtime}} 
     </br>
     <a href=""><button type="button" class="btn btn-sm btn-primary" >  刷新页面  </button></a>   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="/logout"><button type="button" class="btn btn-sm btn-primary" >  切换登陆用户  </button></a>   
+    </br>
+    <h1 id="grp-admin-title">状态：{{descript}}   {% if status != 222 and status != 200 and status != 201 %}{{suggest}}{% endif %}    </h1> 
+    </br>
+    
     {% if status == 222 %}
-    <a href="/logout"><button type="button" class="btn btn-sm btn-primary" >  退出登录  </button></a>   
+    <a href="/wx_logout"><button type="button" class="btn btn-sm btn-primary" >  退出登录  </button></a>   
     {% endif %}
     </br>
-    </br>
-
+    
     {% if status != 200 and status != 222 %}
     <img alt="image"  src="{{qr_url}}" />
     {% endif %}
@@ -21,6 +23,7 @@
     {% if status == 222 %}
     
     {% if send_result != '' %}
+    </br>
         {% autoescape off %}
             {{send_result}}
         {% endautoescape %}
@@ -36,7 +39,8 @@
 	            <option value="{{key}}">{{value}}</option>
 	        {% endfor %}
 	        </select>
-	        注意：已经排除了微信公众号，没有设置性别的好友，标注为疑似好友
+	        </br>
+	        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注意：已经排除了微信公众号，没有设置性别的好友，标注为疑似好友
 	    </div>
 	    发送内容：
 	    <div class="form-group">

@@ -15,12 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url
 
-from .views import Login_Wechat
+from .views import Manage, Interface
 
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
-    url(r'^$', Login_Wechat().lykchat, name='index'),
-    url(r'^sendmsg', Login_Wechat().interface_sendmsg, name='sendmsg'),
-    url(r'^logout$', Login_Wechat().logout, name='logout'),
+    url(r'^$', Manage().index, name='index'),
+    url(r'^login$', Manage().login, name='login'),
+    url(r'^sendmsg', Interface().sendmsg, name='sendmsg'),
+    url(r'^check_login', Interface().check_login, name='check_login'),
+    url(r'^wx_logout$', Manage().wx_logout, name='wx_logout'),
+    url(r'^logout$', Manage().logout, name='logout'),
 ]

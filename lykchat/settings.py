@@ -15,8 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 365
-
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 # Quick-start development settings - unsuitable for production
@@ -46,9 +44,6 @@ INSTALLED_APPS = [
     'lykchat',
 ]
 
-CRONJOBS = (
-    ('*/10 * * * *', 'library.cron.wechat.cronwx_checklogin', '>>/dev/shm/lykchat.txt 2>&1'),
-)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,21 +80,10 @@ WSGI_APPLICATION = 'lykchat.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE' : 'django.db.backends.mysql',
-        'NAME' : 'lykchat',
-        'USER' : 'lykchat',
-        'PASSWORD' :'!QAZ2wsx',
-        'HOST' : '127.0.0.1',
-        'PORT' : '3306',
-        'OPTIONS': {  
-            'charset': 'utf8',
-            'use_unicode': True,
-        },
-    },
-}
+from library.config import wechat
+DATABASES = wechat.DATABASES
+SESSION_COOKIE_AGE = wechat.SESSION_COOKIE_AGE
+CRONJOBS = wechat.CRONJOBS 
 
 
 # Password validation
@@ -140,6 +124,4 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 
-STATIC_URL = '/static/'  # 若存放静态文件的static目录在app目录下，则改局生效，无需定义下面的
-
-# 若存放静态文件的static目录在project目录下，则用该定义
+STATIC_URL = '/static/'
