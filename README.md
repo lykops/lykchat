@@ -108,6 +108,6 @@
 		邮箱：liyingke112@126.com	
 
 
-![安装步骤](https://github.com/lykops/lykchat/wiki/%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4)
+![WIKI](https://github.com/lykops/lykchat/wiki/)
 
 
