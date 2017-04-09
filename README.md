@@ -23,10 +23,6 @@ lykchat信息发送系统是Python3开发的，通过模拟微信网页端，基
 
 ## 截图 ##
 
-管理页面--等待扫码
-![等待扫码 截图](https://raw.githubusercontent.com/lykops/lykchat/master/doc/web管理--登陆.jpg)
-
-
 管理页面--功能展示
 ![等待扫码 截图](https://raw.githubusercontent.com/lykops/lykchat/master/doc/web页面--功能说明.jpg)
 
