@@ -26,12 +26,16 @@ lykchat信息发送系统是Python3开发的，通过模拟微信网页端，基
 ## 截图
 
 管理页面--功能展示
+
 ![等待扫码 截图](https://raw.githubusercontent.com/lykops/lykchat/master/doc/web页面--功能说明.jpg)
 
-管理页面--微信登陆时长
+
+管理页面--微信登陆时长 
+
 ![微信登陆时长 截图](https://raw.githubusercontent.com/lykops/lykchat/V2.1.0/doc/微信登陆时间超过1天.jpg)
  
 接口-发送信息成功
+
 ![发送信息成功 截图](https://raw.githubusercontent.com/lykops/lykchat/master/doc/接口-发送信息成功.jpg)
  
 	
