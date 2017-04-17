@@ -9,3 +9,4 @@ django-template-utils
 mysqlclient
 Pillow
 requests
+requests-toolbelt

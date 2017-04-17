@@ -1,7 +1,7 @@
 import os, platform
 from lykchat.settings import BASE_DIR
 
-version = '2.0.0'
+version = '2.1.0'
 base_url = 'https://wx2.qq.com'
 os_type = platform.system()  # Windows, Linux, Darwin
 curr_dir = os.getcwd()
@@ -68,14 +68,15 @@ DATABASES = {
     },
 }
 
-
 SESSION_COOKIE_AGE = 60 * 60 * 1
 
+max_upload_size = 1024 * 1024 * 5
+# 上传文件最大值，单位bytes，默认5M
 
 CRONJOBS = (
     ('*/2 * * * *', 'library.cron.checklogin.check_login', '>>/dev/shm/lykchat.txt 2>&1'),
 )
-
+# 检测登陆状态的计划任务
 
 url_frond = 'http://127.0.0.1/'
 

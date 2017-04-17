@@ -10,7 +10,7 @@ lykchat信息发送系统是Python3开发的，通过模拟微信网页端，基
 		web管理页面实现可视化管理微信登陆
 		接口采用URL，简化调用复杂度，返回结果均为json格式
 	2、信息共享
-		通过共享用户session和微信登陆信息，保证系统长期稳定运行
+		通过共享用户session和微信登陆信息，保证系统长期稳定运行 
 	3、7*24不间断服务
 		计划任务定时检查微信登陆状态，微信保持登陆超过20天
 	4、用户管理
@@ -22,10 +22,6 @@ lykchat信息发送系统是Python3开发的，通过模拟微信网页端，基
 
 
 ## 截图 ##
-
-管理页面--等待扫码
-![等待扫码 截图](https://raw.githubusercontent.com/lykops/lykchat/master/doc/web管理--登陆.jpg)
-
 
 管理页面--功能展示
 ![等待扫码 截图](https://raw.githubusercontent.com/lykops/lykchat/master/doc/web页面--功能说明.jpg)
@@ -82,7 +78,7 @@ lykchat信息发送系统是Python3开发的，通过模拟微信网页端，基
         'friendfield'：接受信息的好友字段代号，0昵称，1微信号，2备注名，可以为空，默认为0
         'friend': 接受信息的好友的昵称、微信号、备注名的其中之一，不能为空
         'content': 发送内容，不能为空
-		注意：
+		注意： 
 			friend一定是该用户下的登陆微信好友列表中的
 			friendfield最好是微信号（Alias），也可以使用昵称（NickName）或者备注名（RemarkName）（但不能重复出现）
 			由于好友列表使用缓存机制，新增好友可能发送信息不成功

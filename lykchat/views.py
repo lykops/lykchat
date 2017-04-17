@@ -1,3 +1,4 @@
+from fileinput import filename
 import time
 
 from django.http.response import HttpResponseRedirect
@@ -42,14 +43,14 @@ class Base():
 
         self.session_info_dict = get_friend.update_friend_list()
         self.session_info_dict = get_friend.get_friend_dict()
+ 
 
-
-    def _send_msg(self , tousername, content, call_type='' , post_field='UserName'):
+    def _send_msg(self , tousername, content, filename='', msgType='txt', call_type='' , post_field='UserName'):
         '''
         发送信息，处理返回值
         '''
         send_msg = Send_Msg(self.session_info_dict)
-        send_result_dict = send_msg.send(content, tousername=tousername, post_field=post_field)
+        send_result_dict = send_msg.send(content, msgType=msgType, filename=filename, tousername=tousername, post_field=post_field)
 
         if send_result_dict['Code'] == -1 :
             self.status = 402
@@ -58,11 +59,9 @@ class Base():
             return send_result_dict
 
         if send_result_dict['Code'] == 0 :
-            # send_result = '信息：' + content + '</br>发送给' + str(send_result_dict['friend_dict']) + '</br>成功发送'
             send_result = '成功发送'
             return '<div class="alert alert-success text-center">' + send_result + '</div>'
         else :
-            # send_result = '信息：' + content + '</br>发送给' + str(send_result_dict['friend_dict']) + '</br>结果为' + send_result_dict['ErrMsg'] + '</br>返回原文为' + str(send_result_dict)
             send_result = '成功失败'
             return '<div class="alert alert-danger text-center">' + send_result + '</div>'
 
@@ -82,74 +81,94 @@ class Interface(Base):
         parameter_dict = {
             'username' : '用户' ,
             'pwd' : '接口密码，注意不等于登陆密码' ,
+            'type' : '发送信息类型，{"txt":"纯文字" ,"img":"图片","file":"发送文件","video":"视频"}，可以为空，默认：没有文件为txt，有文件为file',
             'fromalias':'发送者的微信号，目前没有使用该参数',
-            'friendfield':'接受者的字段代号，{0:"NickName" , 1:"Alias" , 2:"RemarkName"}，可以为空，默认为0 ',
+            'friendfield':'接受者的字段代号，{0:"NickName" , 1:"Alias" , 2:"RemarkName"}，可以为空，默认为0',
             'friend':'接受者的昵称、微信号、备注名的其中一个，不能为空',
             'content':'发送内容，不能为空',
-            'url' : 'sendmsg?username=zabbix&pwd=123456&friendfield=1&friend=lyk-ops&content=test'
+            'get方法测试url' : 'sendmsg?username=zabbix&pwd=123456&type=txt&friendfield=1&friend=lyk-ops&content=test'
         }
-        
+        # curl -F "file=@/root/a" 'http://127.0.0.1/sendmsg?username=zabbix&pwd=123456&type=img&friendfield=1&friend=lyk-ops&content=test'
+        friendfield_dict = {0:'NickName' , 1:'Alias' , 2:'RemarkName'} 
+        resultpage = 'result.html'
         request_dict = {}
         send_result = {}
-        key_list = ['username', 'pwd', 'fromalias', 'friendfield', 'friend', 'content']        
-        for key in key_list :
-            # post或者get字段是否正确
+        
+        for key in ['username', 'pwd', 'friend', 'content'] :
             try :
-                if request.method == 'GET' :
+                try:
                     request_dict[key] = request.GET[key]
-                else :
+                except :
                     request_dict[key] = request.POST[key]
             except :
-                if key == 'friend':
-                    send_result = {'Code':-1101 , 'Msg' : '接受者不能为空', 'ErrMsg' : parameter_dict}
-                elif key == 'content' :
-                    send_result = {'Code':-1101 , 'Msg' : '内容不能为空', 'ErrMsg' : parameter_dict}
-                else :
-                    request_dict[key] = False
+                send_result = {'Code':-1101 , 'Msg' : '缺少必要的参数', 'ErrMsg' : parameter_dict}
+                return render(request, resultpage, {'result':send_result}) 
 
+        # 验证用户的接口密码是否正确
+        username = request_dict['username']
+        pwd = request_dict['pwd']
+        password = wechat.user_mess_dict[username]['interface_pwd']
+        if pwd != password :
+            send_result = {'Code':-1101 , 'Msg' : str(username) + '接口密码错误，请注意不等于登陆密码', 'ErrMsg' : parameter_dict}
+            return render(request, resultpage, {'result':send_result}) 
+        
+        op_info = Manage_Logininfo()
+        self.session_info_dict = op_info.get_info(username)
+        status = self.session_info_dict['status']
+        if status != 222 :
+            # 验证登陆情况
+            send_result = {'Code': 1101 , 'Msg' : '微信还未登录或者退出登录', 'ErrMsg' : '' }
+            return render(request, resultpage, {'result':send_result}) 
+
+        for key in ['type', 'friendfield'] :
+            try :
+                try:
+                    request_dict[key] = request.GET[key]
+                except :
+                    request_dict[key] = request.POST[key]
+            except :
+                if key == 'type' :
+                    request_dict[key] = 'txt'
+                if key == 'friendfield' :  
+                    request_dict[key] = 0
+
+        if request_dict['type'] not in ['txt', 'img', 'file', 'video'] :
+            request_dict['type'] = 'txt'
+        
+        if request_dict['friend'] == 'filehelper' :
+            tousername = 'filehelper'
+            friendfield = 'NickName'
+        else :
+            tousername = request_dict['friend']
+            fieldindex = int(request_dict['friendfield'])
+            if fieldindex not in friendfield_dict:
+                friendfield = 'NickName'
+            else :
+                friendfield = friendfield_dict[fieldindex]
+                            
         try :
-            # 验证用户的接口密码是否正确
-            username = request_dict['username']
-            pwd = request_dict['pwd']
-            password = wechat.user_mess_dict[username]['interface_pwd']
-            
-            if pwd != password :
-                send_result = {'Code':-1101 , 'Msg' : str(username) + '接口密码错误，请注意不等于登陆密码', 'ErrMsg' : parameter_dict}
+            file = request.FILES['file']
+            if file.size > wechat.max_upload_size:
+                send_result = {
+                    'status' : '上传文件超过最大值',
+                    'file_uuid':'',
+                }
+                return render(request, 'result.html', {'result':send_result}) 
+        
+            request_dict['type'] = 'file'
+            from library.file.upload import upload_file
+            filename = str(file)
+            filename = upload_file(file, filename=filename , username=username)
         except :
-            send_result = {'Code':-1101 , 'Msg' :  '用户或者接口密码不能为空', 'ErrMsg' : parameter_dict}
-
-        if send_result == {} or not send_result :
-            op_info = Manage_Logininfo()
-            self.session_info_dict = op_info.get_info(username)
-            status = self.session_info_dict['status']
-            if status != 222 :
-                # 验证登陆情况
-                send_result = {'Code': 1101 , 'Msg' : '微信还未登录或者退出登录', 'ErrMsg' : '' }
-    
-            friendfield_dict = {0:'NickName' , 1:'Alias' , 2:'RemarkName'}   
-            try :     
-                if request_dict['friend'] == 'filehelper' :
-                    tousername = 'filehelper'
-                    friendfield = 'NickName'
-                else :
-                    tousername = request_dict['friend']
-                    fieldindex = int(request_dict['friendfield'])
-                    if fieldindex not in friendfield_dict:
-                        friendfield = 'NickName'
-                    else :
-                        friendfield = friendfield_dict[fieldindex]       
-                               
-                nowtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())  
-                # content = 'lykchat 发送接口推送：' + request_dict['content']
-                content = nowtime + '\n' + request_dict['content']
-            except:
-                send_result = {'Code':-1101 , 'Msg' : '参数错误', 'ErrMsg' : parameter_dict}
-
-        if send_result == {} or not send_result :
-            self._get_friend_info()
-            send_result = self._send_msg(tousername=tousername , content=content , call_type='interface', post_field=friendfield)
-            
-        return render(request, 'result.html', {'result':send_result}) 
+            filename = ''
+            request_dict['type'] = 'txt'
+        
+        # nowtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())  
+        # content = 'lykchat 发送接口推送：' + request_dict['content']
+        # content = nowtime + '\n' + request_dict['content']
+        content = request_dict['content']
+        send_result = self._send_msg(tousername=tousername , content=content , msgType=request_dict['type'] , filename=filename, call_type='interface', post_field=friendfield)
+        return render(request, resultpage, {'result':send_result}) 
 
     
     def check_login(self, request):
@@ -230,8 +249,8 @@ class Interface(Base):
                     'check_time' : int(time.time()),
                     'login_time' : session_info_dict['login_stamptime'],
                     'login_min' : login_min,
-                    'alias' : session_info_dict['alias'],
-                    'nickname' : session_info_dict['nickname'],
+                    'alias' : session_info_dict['myself']['Alias'],
+                    'nickname' : session_info_dict['myself']['NickName'],
                     'status' : login_status_code_dict[status]['descript']
                     }
             else :
@@ -398,11 +417,27 @@ class Manage(Base):
             if request.method == 'POST' :
                 try :
                     tousername = request.POST['username']
+                    
+                    try :
+                        file = request.FILES['file']
+                        if file.size > wechat.max_upload_size:
+                            filename = False
+                        else :
+                            from library.file.upload import upload_file
+                            filename = str(file)
+                            filename = upload_file(file, filename=filename , username='zabbix')
+                    except :
+                        filename = False
+                    
                     try : 
                         # nowtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
                         content = request.POST['content']
                         content = 'lykchat web页面推送：' + content
-                        self.send_result = self._send_msg(tousername, content)
+                        
+                        if not filename :
+                            self.send_result = self._send_msg(tousername, content)
+                        else :
+                            self.send_result = self._send_msg(tousername, content, filename=filename, msgType='file') 
                     except :
                         self.send_result = '<div class="alert alert-danger text-center">发送内容为空</div>'
                 except :
@@ -457,7 +492,6 @@ class Manage(Base):
         except :
             display_html_dict['send_result'] = ''
             
-
         op_info = Manage_Logininfo()
         op_info.update(self.session_info_dict)
         request.session['username'] = self.username
