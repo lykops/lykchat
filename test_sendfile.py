@@ -10,7 +10,7 @@ for argv in argvstr :
     argv_dict.update(DICT)
 
 # 例子/usr/local/python36/bin/python3 /opt/lykchat/test_upload.py "{'username':'zabbix','pwd':'123456','type':'img','friendfield':'1','friend':'lyk-ops','content':'恭喜发财','file':'/root/b.jpg'}"
-# # curl -F "file=@/root/a" 'http://127.0.0.1/sendmsg?username=zabbix&pwd=123456&type=img&friendfield=1&friend=lyk-ops&content=test'
+# 等同于curl -F "file=@/root/a" 'http://127.0.0.1/sendmsg?username=zabbix&pwd=123456&type=img&friendfield=1&friend=lyk-ops&content=test'
 
 parameter_dict = {
     'username' : '用户' ,
