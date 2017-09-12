@@ -1,0 +1,32 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <h1 id="grp-admin-title">用户【{{ username }}】日志</h1>
+
+    <table class="table table-striped table-bordered table-hover" id="editable" >
+        <thead>
+            <tr>
+            <th>时间</th>
+            <th>模块</th>
+            <th>级别</th>
+            <th>内容</th>
+            </tr>
+        </thead>
+          
+        <tbody>
+        {% for list in log_list %}
+            <tr class="active">
+            {% for value in list %}
+                {% autoescape off %}
+                     <td>{{ value }}</td>
+                {% endautoescape %}
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="/"><button type="button" class="btn btn-sm btn-primary" >返回</button></a>
+</div>
+{% endblock%}

@@ -13,7 +13,7 @@
 	    <div class="middle-box text-center loginscreen  animated fadeInDown">
 	        <div>
 	            <div><h1 class="logo-name"><img src="/static/img/logo.jpg"></h1></div>
-	            <h3>欢迎使用lykchat信息发送系统</h3>
+	            <h3>欢迎使用lykchat</h3>
 	            
                 {% if error_message %}
                 <div class="alert alert-danger text-center">{{ error_message }}</div>
@@ -24,10 +24,10 @@
 	            <form class="m-t" role="form" method="post" action="">
 	            {% csrf_token %}
 	                <div class="form-group">
-	                    <input type="text" name="username" class="form-control" placeholder="Username" required="length[4~15]">
+	                    <input type="text" name="username" class="form-control" placeholder="请输入您的用户名" required="length[2~16]">
 	                </div>
 	                <div class="form-group">
-	                    <input type="password" name="password" class="form-control" placeholder="Password" required="">
+	                    <input type="password" name="password" class="form-control" placeholder="请输入您的登陆密码" required="length[8~16]">
 	                </div>
                     </br>
 	                <button type="submit" class="btn btn-primary block full-width m-b">登陆</button>
@@ -36,9 +36,9 @@
                 </br>
 	           
 	            <p class="m-t"> <small>
-	            <b>Copyright</b> 
-	            <a href="mailto:liyingke112@126.com">liyingke112@126.com</a> 
-	            © 2017
+	            Copyright lyk-ops &copy; 2017
+	            </br>
+	            官网：https://github.com/lykops/lykops
 	            </small> </p>
 	        </div>
 	    </div>

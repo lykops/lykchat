@@ -1,0 +1,57 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <h1 id="grp-admin-title">用户列表</h1>
+    
+    </br>
+    <a href="/user/add"><button type="button" class="btn btn-sm btn-primary" >新增</button></a>
+    </br>
+    </br>
+    </br>
+    
+    <table class="table table-striped table-bordered table-hover" id="editable" >
+        <thead>
+            <tr>
+            {% for title in list_title_list %}
+                <th>{{title}}</th>
+            {% endfor %}
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            </tr>
+        </thead>
+          
+        <tbody>
+        {% for list in query_list %}
+            <tr class="active">
+            {% for value in list %}
+                {% autoescape off %}
+                     <td>{{ value }}</td>
+                {% endautoescape %}
+            {% endfor %}
+            <td>
+                <a href="/user/detail?username={{ list.0 }}"><button type="button" class="btn btn-sm btn-primary" >查看</button></a>
+            </td> 
+            <td>
+                <a href="/user/edit?username={{ list.0 }}"><button type="button" class="btn btn-sm btn-warning" >编辑</button></a>
+            </td> 
+            <td>
+                <a href="/user/chgpwd?username={{ list.0 }}"><button type="button" class="btn btn-sm btn-warning" >改密</button></a>
+            </td>
+            <td>
+                <a href="/user/disable?username={{ list.0 }}"><button type="button" class="btn btn-sm btn-warning" >禁用</button></a>
+            </td>
+            <td>
+                <a href="/user/enable?username={{ list.0 }}"><button type="button" class="btn btn-sm btn-warning" >启用</button></a>
+            </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="/"><button type="button" class="btn btn-sm btn-primary" >返回</button></a>
+</div>
+{% endblock%}

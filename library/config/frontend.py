@@ -1,0 +1,1 @@
+adminuser = 'lykchat'

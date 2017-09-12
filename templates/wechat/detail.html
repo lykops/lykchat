@@ -1,0 +1,57 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight">
+     
+    <a href=""><button type="button" class="btn btn-sm btn-primary" >  刷新页面  </button></a>   
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
+    {% if info_dict.status == 222 %}
+    <a href="/wechat/logout?uuid={{ info_dict.uuid }}"><button type="button" class="btn btn-sm btn-warning" >  退出该微信  </button></a>   
+    {% endif %}
+
+    <h1 id="grp-admin-title">微信号【{{ info_dict.nickname }}】的状态：{{info_dict.descript}}   {% if info_dict.status != 222 and info_dict.status != 200 and info_dict.status != 201 %}{{info_dict.suggest}}{% endif %}    </h1> 
+
+    {% if info_dict.status != 200 and info_dict.status != 222 %}
+    <img alt="image"  src="{{ info_dict.qr_url }}" />
+    {% endif %}
+    
+    {% if info_dict.status == 222 %}
+    
+    {% if info_dict.send_result != '' %}
+    </br>
+        {% autoescape off %}
+            {{ info_dict.send_result }}
+        {% endautoescape %}
+    {% endif %}
+
+        <h1 id="grp-admin-title"> -----------------------------------------发送信息-------------------------------------------------</h1>
+        <form id="send"  name="send"  enctype="multipart/form-data" action=""  method="post"  class="form-horizontal">
+	    {% csrf_token %}
+	    发送给：
+	    <div class="form-group">
+	        <select id="id_username" name="username" required="">
+	        {% for key,value in info_dict.friend_dict.items %}
+	            <option value="{{key}}">{{value}}</option>
+	        {% endfor %}
+	        </select>
+	        </br>
+	        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注意：已经排除了微信公众号，没有设置性别的好友，标注为疑似好友
+	    </div>
+	    发送内容：
+	    <div class="form-group">
+	        <input type="text" name="content" class="form-control" placeholder="发送信息内容，2-100个字符" required="length[2~100]">
+	    </div>
+	    </br>
+	    <label for="fileField">选择发送的文件：<input type="file" name="file"></label>
+        </br>
+        </br>
+        <button type="submit" class="btn btn-sm btn-primary">发送信息</button>
+	</form>
+
+    </br>
+    <a href=""><button type="button" class="btn btn-sm btn-primary" >重填</button></a>
+    {% endif %}
+</div>
+
+{% endblock%}

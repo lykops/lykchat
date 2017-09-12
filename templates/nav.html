@@ -1,37 +1,23 @@
 <nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="alert alert-success text-center">尊敬的{{login_user}}用户：你好！</div>
+    </br>
+    <div class="alert alert-success text-center">当前服务器时间：{{nowtime}}</div>
+    </br>
+    <a href="/logout.html"><button type="button" class="btn btn-sm btn-warning" >退出登录</button></a>
+    
+    </br>
+    </br>
+    </br>
+
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
-            <div class="alert alert-success text-center">当前登陆用户：{{username}}</div>
-        
-	        {% if status == 222 %}
-	        <div class="alert alert-success text-center">
-	            状态：{{descript}}
-	            </br>
-	            昵称：{{nickname}}
-	            </br>
-		        {% if alias != '' %}
-		        微信号：{{alias}}
-		        {% else %}
-                <div class="alert alert-danger text-center">
-                无法获取微信号
-                </br>
-                   请设置微信号
-                </br>
-                    或在任意群发信息
-                </div>
-		        {% endif %}
-	            </br>
-	            登陆时长：{{login_min}}
-	        </div>
-	        {% else %}
-	        <div class="alert alert-danger text-center">
-	            登陆状态：{{descript}}
-	            </br>
-	            {% if status != 200 and status != 222 %}
-	            uuid：{{uuid}}
-	            {% endif %}
-	        </div>
-	        {% endif %}
+
+        {% autoescape off %}
+        {{nav_html}}
+        {% endautoescape %}
+
         </ul>
     </div>
+
+
 </nav>

@@ -1,3 +1,20 @@
+{% extends "base.html" %} 
+{% block content %}
+{% if error_message %}
+</br>
+</br>
+<div class="alert alert-danger text-center">{{ error_message }}</div>
+{% endif %}
+
+</br>
+</br>
 {% autoescape off %}
-    {{result}}
+{{ content }}
 {% endautoescape %}
+
+</br>
+</br>
+</br>
+
+<a href="{{ http_referer }}"><button type="button" class="btn btn-sm btn-primary" >返回</button></a>
+{% endblock%}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>lykchat信息发送系统</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    </head>
+
+    <body class="gray-bg">
+        <div class="middle-box text-center loginscreen  animated fadeInDown">
+	        </br>
+            <div>
+                <h2>欢迎使用lykchat</h2>
+            </div>
+            </br>
+            </br>
+            <div>
+                <h2>请创建超级管理员</h2>
+			</div>
+                
+            {% if error_message %}
+                <div class="alert alert-danger text-center">{{ error_message }}</div>
+            {% endif %}
+                
+            <form class="m-t" role="form" method="post" action="">
+            {% csrf_token %}
+		        <div class="form-group">
+		            真实姓名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="name" class="" placeholder="真实姓名长度为2-16位" required="length[2~16]">
+		        </div>              
+		        <div class="form-group">
+		            联系方式&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="contact" class="">
+		        </div>          
+		        <div class="form-group">
+		            接口密码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="ifpwd" class="length[2~16]">
+		        </div> 
+                <div class="form-group">
+                    输入登陆密码&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" name="password" class="" placeholder="登陆密码长度为8-16位" required="length[8~16]">
+                </div>        
+                <div class="form-group">
+                    确认登陆密码&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" name="password-confirm" class="" placeholder="确认登陆密码" required="length[8~16]">
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary">确认</button>
+            </form>
+                
+            <p class="m-t"> <small>
+            Copyright lyk-ops &copy; 2017
+            </br>
+            官网：https://github.com/lykops/lykchat
+            </small> </p>
+        </div>
+    </body>
+</html>

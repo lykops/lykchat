@@ -1,0 +1,61 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <h1 id="grp-admin-title">微信号列表</h1>
+    
+    {% if err_msg %}
+    </br>
+    <div class="alert alert-danger text-center">{{ err_msg }}</div>
+    </br>
+    {% endif %}
+    
+    {% if suc_msg %}
+    </br>
+    <div class="alert alert-success text-center">{{ suc_msg }}</div>
+    </br>
+    {% endif %}
+    
+    </br>
+    <a href="/wechat/detail"><button type="button" class="btn btn-sm btn-primary" >新增登陆</button></a>
+    </br>
+    </br>
+    </br>
+    
+    <table class="table table-striped table-bordered table-hover" id="editable" >
+        <thead>
+            <tr>
+            <th>微信昵称</th>
+            <!-- <th>微信号</th> -->
+            <th>uuid</th>
+            <th>状态说明</th>
+            <th>登陆时间</th>
+            <th>登出时间</th>
+            <th></th>
+            <th></th>
+            </tr>
+        </thead>
+          
+        <tbody>
+        {% for abs_dict in abs_list %}
+            <tr class="active">
+                <td>{{ abs_dict.nickname }}</td>
+                <!-- <td>{{ abs_dict.alias }}</td> -->
+                <td>{{ abs_dict.uuid }}</td>
+                <td>{{ abs_dict.descript }}</td>
+                <td>{{ abs_dict.login_time }}</td>
+                <td>{{ abs_dict.logout_time }}</td>
+            <td>
+                <a href="/wechat/detail?uuid={{ abs_dict.uuid }}"><button type="button" class="btn btn-sm btn-primary" >查看</button></a>
+            </td> 
+            <td>
+                <a href="/wechat/logout?uuid={{ abs_dict.uuid }}"><button type="button" class="btn btn-sm btn-warning" >退出微信</button></a>
+            </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="/"><button type="button" class="btn btn-sm btn-primary" >返回</button></a>
+</div>
+{% endblock%}

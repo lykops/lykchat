@@ -5,17 +5,52 @@
     	<meta name="renderer" content="webkit">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>lykchat信息发送系统</title>
-        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+        {% block header %}{% endblock %}
 	</head>
 	
 	<body>
         <div id="wrapper" >
             {% include 'nav.html' %}
-           <div id="page-wrapper" class="gray-bg ">
+            
+            <div id="page-wrapper" class="gray-bg ">
+                </br>
+                </br>
+		        {% autoescape off %}
+		        {{lately_whereabouts}}
+		        {% endautoescape %}
+                
+                </br>
                 {% block content %}{% endblock %}
                 {% include 'footer.html' %}
-            </div>
+             </div>
         </div>
     </body>
+
+
+    {% block self_footer_js %}
+    {% endblock %}
+ 
+<!--     该部分用于解决左侧栏伸缩 -->
+    <script src="/static/js/jquery-3.2.1.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/base.js"></script>
+    
+    <script src="/static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/static/js/inspinia.js"></script>
+
+    <script>
+        var url_array = document.location.pathname.split("/");
+        s1 = url_array[1];
+        s2 = url_array[2];
+        if (s1 == ''){
+            $('#index').addClass('active')
+        } else {
+            $("#"+s1).addClass('active');
+            $('#'+s1+' .'+s2).addClass('active');
+        }
+
+    </script>
+<!--    该部分用于解决左侧栏伸缩 -->
 </html>

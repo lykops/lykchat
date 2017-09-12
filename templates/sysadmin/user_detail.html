@@ -1,0 +1,38 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight col-sm-6">
+    <h1 id="grp-admin-title">用户【{{ username }}】详细信息</h1>
+   
+    {% if error_message %}
+    <div class="alert alert-danger text-center">{{ error_message }}</div>
+    {% endif %}
+   
+    <table class="table table-striped table-bordered table-hover "  id="editable" >
+        {% for key , value in detail_dict.items %}
+        <tbody>
+            <tr>
+                <th>{{ key }}</th>
+                {%  if value == None %}
+                <td></td>
+                {% else %}
+                
+				{% autoescape off %}
+                    <td>{{ value }}</td>
+				{% endautoescape %}
+
+                {% endif %}
+            </tr>
+        </tbody>
+    {% endfor %}
+    </table>
+
+    </br>
+    </br>
+    <a href="/user/edit?username={{ username }}"><button type="button" class="btn btn-sm btn-warning" >编辑</button></a>
+    <a href="/user/chgpwd?username={{ username }}"><button type="button" class="btn btn-sm btn-warning" >修改登录密码</button></a>
+    <a href="/user/disable?username={{ username }}"><button type="button" class="btn btn-sm btn-warning" >禁用</button></a>
+    <a href="/user/enable?username={{ username }}"><button type="button" class="btn btn-sm btn-warning" >启用</button></a>
+    <a href="/user/list"><button type="button" class="btn btn-sm btn-primary" >返回</button></a>
+</div>
+{% endblock%}

@@ -1,0 +1,38 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight col-sm-6">
+    <h1 id="grp-admin-title">新增用户</h1>
+   
+    {% if error_message %}
+    <div class="alert alert-danger text-center">{{ error_message }}</div>
+    {% endif %}
+                
+    <form class="m-t" role="form" method="post" action="">
+    {% csrf_token %}        
+        <div class="form-group">
+            输入用户名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="username" class="" placeholder="用户名长度为2-16位" required="length[2~16]">
+        </div>             
+        <div class="form-group">
+            真实姓名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="name" class="" placeholder="真实姓名长度为2-16位" required="length[2~16]">
+        </div>              
+        <div class="form-group">
+            联系方式&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="contact" class="">
+        </div> 
+        <div class="form-group">
+            接口密码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="ifpwd" class="length[2~16]">
+        </div> 
+        <div class="form-group">
+            输入登陆密码&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" name="password" class="" placeholder="登陆密码长度为8-16位" required="length[8~16]">
+        </div>        
+        <div class="form-group">
+            确认登陆密码&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" name="password-confirm" class="" placeholder="确认登陆密码" required="length[8~16]">
+        </div>
+        <button type="submit" class="btn btn-sm btn-primary">确认</button>
+    </form>
+
+    </br>
+    </br>
+    <a href="/user/list"><button type="button" class="btn btn-sm btn-primary" >返回</button></a>
+</div>
+{% endblock%}
