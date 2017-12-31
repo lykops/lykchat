@@ -575,4 +575,7 @@ class Manager_Single(Wechat_Base):
         else :
             send_dict = return_dict
             
-        return (True, send_dict)
+        if text_dict['ok'] :
+            return (True, send_dict)
+        else :
+            return (False, send_dict)

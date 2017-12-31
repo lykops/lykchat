@@ -194,7 +194,7 @@ LOGGING = {
             'level':'INFO',  # 允许保存日志的最低级别
             'class':'logging.handlers.RotatingFileHandler',
             # 'class':'logging.handlers.TimedRotatingFileHandler',
-            'filename': BASE_DIR + '/logs/lykchat_wechat_' + timestamp2datetime(fmt='%Y-%m-%d') + '.log',  # 日志输出文件
+            'filename': BASE_DIR + '/logs/wechat_' + timestamp2datetime(fmt='%Y-%m-%d') + '.log',  # 日志输出文件
             'formatter':'standard',  # 使用哪种formatters日志格式
         },
     },

@@ -43,14 +43,11 @@ if 'file' not in argv_dict :
     r = requests.post(url, data=data, headers=headers)
     result = r.text
 else :
+    fields = argv_dict
+    fields['file'] = (os.path.basename(argv_dict['file']) , open(argv_dict['file'], 'rb'), 'application/octet-stream')
+    
     multipart_encoder = MultipartEncoder(
-        fields={
-            'username': argv_dict['username'],
-            'pwd': argv_dict['pwd'],
-            'friend': argv_dict['friend'],
-            'content': argv_dict['content'],
-            'file': (os.path.basename(argv_dict['file']) , open(argv_dict['file'], 'rb'), 'application/octet-stream')
-            },
+        fields=fields,
             boundary='-----------------------------' + str(random.randint(1e28, 1e29 - 1))
         )
     
