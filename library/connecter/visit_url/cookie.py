@@ -60,6 +60,7 @@ class Request_Url():
             url_req = None
             self.logger.error('访问' + self.url + '时出错，原因：' + str(e))
         
+        self.url_req = url_req
         # 访问后设置headers，用于后续访问，如果没有的，不设置
         try :
             for header in ['Content-Type' , 'Connection' , 'Domain', 'Referer']:
@@ -75,7 +76,7 @@ class Request_Url():
             pass
 
         self.headers = headers
-        self.url_req = url_req
+        #self.url_req = url_req
         try :
             new_cookies = dict(self.url_req.cookies)
         except :
